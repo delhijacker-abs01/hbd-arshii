@@ -90,197 +90,233 @@
 
   <div id="hearts-container" class="fixed inset-0 overflow-hidden pointer-events-none z-0"></div>
 
-  <!-- Top header badge (Centered & Clean) -->
-  <header class="relative z-20 w-full max-w-4xl mx-auto px-4 pt-4 flex items-center justify-center">
-    <div class="flex items-center space-x-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-rose-500/30 text-xs text-rose-200 shadow-md">
+  <!-- SECTION 1: STARTING VIDEO SCREEN -->
+  <div id="video-intro-section" class="relative z-30 min-h-screen flex flex-col items-center justify-center px-4 py-8 max-w-xl mx-auto transition-opacity duration-700">
+    <div class="flex items-center space-x-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-rose-500/30 text-xs text-rose-200 shadow-md mb-4">
       <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
-      <span class="font-medium tracking-wide">A Special Surprise Just For You ✨</span>
-    </div>
-  </header>
-
-  <main class="relative z-10 max-w-2xl mx-auto px-4 py-6 sm:py-8 flex flex-col items-center justify-center min-h-[90vh]">
-    
-    <!-- Initial Greeting & Instruction Header -->
-    <div id="greeting-header" class="text-center mb-4 sm:mb-6 transition-all duration-700">
-      <span class="text-xs uppercase tracking-[0.3em] text-rose-400 font-semibold mb-2 block">Make A Wish</span>
-      <h1 class="font-cursive text-4xl sm:text-6xl text-transparent bg-clip-text bg-gradient-to-r from-rose-200 via-pink-100 to-amber-200 drop-shadow-md">
-        Close Your Eyes & Blow The Candle
-      </h1>
-      <p id="greeting-subtext" class="text-gray-300 text-sm sm:text-base mt-2 max-w-md mx-auto">
-        ਸਰਪ੍ਰਾਈਜ ਵਾਸਤੇ ਮੋਮਬੱਤੀ ਬੁਝਾ ਫੂਕ ਮਾਰ ਕੇ 🌬️✨
-      </p>
+      <span class="font-medium tracking-wide">A Special Message For You ✨</span>
     </div>
 
-    <!-- Candle & Red Velvet Cake Section -->
-    <div class="relative w-72 sm:w-80 h-72 sm:h-80 flex flex-col items-center justify-end pb-8">
+    <h1 class="font-cursive text-4xl sm:text-5xl text-center text-transparent bg-clip-text bg-gradient-to-r from-rose-200 via-pink-100 to-amber-200 drop-shadow-md mb-2">
+      Happy Birthday Arshii ❤️
+    </h1>
+    <p class="text-rose-300/80 text-xs sm:text-sm mb-5 text-center">Watch this little clip first 🎬</p>
+
+    <!-- Video Card Container -->
+    <div class="w-full bg-black/40 backdrop-blur-md border border-rose-500/30 rounded-2xl p-2 sm:p-3 shadow-2xl shadow-rose-950/60 relative overflow-hidden">
+      <div class="relative w-full rounded-xl overflow-hidden bg-black flex items-center justify-center aspect-[9/16] max-h-[65vh]">
+        <video id="intro-video" 
+               src="https://files.catbox.moe/gisf7s.mp4" 
+               class="w-full h-full object-contain rounded-xl"
+               playsinline 
+               controls
+               preload="auto">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+
+    <!-- Continue to Candle Button -->
+    <button onclick="proceedToCakeScreen()" class="mt-6 flex items-center space-x-2 bg-gradient-to-r from-rose-600 via-red-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-white font-medium text-sm sm:text-base px-6 py-3 rounded-full shadow-lg shadow-rose-900/50 transition transform hover:scale-105 active:scale-95 animate-pulse">
+      <span>Ready To Make A Wish? 🎂</span>
+      <span>➡️</span>
+    </button>
+  </div>
+
+  <!-- SECTION 2: CANDLE & CAKE SURPRISE SCREEN (Hidden initially) -->
+  <div id="cake-surprise-section" class="hidden opacity-0 transition-opacity duration-700">
+    <!-- Top header badge (Centered & Clean) -->
+    <header class="relative z-20 w-full max-w-4xl mx-auto px-4 pt-4 flex items-center justify-center">
+      <div class="flex items-center space-x-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-rose-500/30 text-xs text-rose-200 shadow-md">
+        <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+        <span class="font-medium tracking-wide">A Special Surprise Just For You ✨</span>
+      </div>
+    </header>
+
+    <main class="relative z-10 max-w-2xl mx-auto px-4 py-6 sm:py-8 flex flex-col items-center justify-center min-h-[90vh]">
       
-      <!-- Big Center Candle Container -->
-      <div id="candle-wrapper" class="relative flex flex-col items-center cursor-pointer group z-20" onclick="handleCandleClick()">
-        
-        <!-- Flame Element -->
-        <div id="flame" class="flame-active relative w-7 h-14 -mb-1">
-          <!-- Outer Fire Glow -->
-          <div class="absolute inset-0 rounded-full bg-gradient-to-t from-orange-600 via-yellow-400 to-white opacity-95 blur-[1px]"></div>
-          <!-- Inner Fire Core -->
-          <div class="absolute bottom-1 left-1.5 right-1.5 h-7 rounded-full bg-gradient-to-t from-blue-500 via-cyan-200 to-white"></div>
-        </div>
-
-        <!-- Smoke Element (Hidden initially) -->
-        <div id="smoke" class="hidden absolute -top-8 w-4 h-8 bg-gray-300/40 rounded-full blur-sm pointer-events-none"></div>
-
-        <!-- Candle Wick -->
-        <div class="w-1.5 h-3 bg-stone-800 rounded-t-sm z-10"></div>
-
-        <!-- Candle Body (Velvet Burgundy with Cream Cheese Stripes) -->
-        <div class="w-7 h-24 rounded-t-sm rounded-b-md shadow-2xl relative overflow-hidden bg-gradient-to-r from-rose-900 via-red-600 to-rose-900 border-x border-rose-400/30">
-          <div class="absolute inset-0 opacity-45 bg-[repeating-linear-gradient(45deg,#be123c,#be123c_6px,#fffbeb_6px,#fffbeb_12px)]"></div>
-          <div class="absolute top-0 left-0 right-0 h-2 bg-[#fffbeb] rounded-b-md shadow-sm"></div>
-          <div class="absolute top-2 left-1 w-1.5 h-3 bg-[#fffbeb] rounded-full"></div>
-        </div>
+      <!-- Initial Greeting & Instruction Header -->
+      <div id="greeting-header" class="text-center mb-4 sm:mb-6 transition-all duration-700">
+        <span class="text-xs uppercase tracking-[0.3em] text-rose-400 font-semibold mb-2 block">Make A Wish</span>
+        <h1 class="font-cursive text-4xl sm:text-6xl text-transparent bg-clip-text bg-gradient-to-r from-rose-200 via-pink-100 to-amber-200 drop-shadow-md">
+          Close Your Eyes & Blow The Candle
+        </h1>
+        <p id="greeting-subtext" class="text-gray-300 text-sm sm:text-base mt-2 max-w-md mx-auto">
+          ਸਰਪ੍ਰਾਈਜ ਵਾਸਤੇ ਮੋਮਬੱਤੀ ਬੁਝਾ ਫੂਕ ਮਾਰ ਕੇ 🌬️✨
+        </p>
       </div>
 
-      <!-- Red Velvet Cake Structure -->
-      <div class="relative w-full flex flex-col items-center -mt-1 cake-glow rounded-3xl p-2 transition-all duration-500">
+      <!-- Candle & Red Velvet Cake Section -->
+      <div class="relative w-72 sm:w-80 h-72 sm:h-80 flex flex-col items-center justify-end pb-8">
         
-        <!-- Top Cake Tier -->
-        <div class="relative w-44 sm:w-52 h-16 bg-gradient-to-r from-[#700d1c] via-[#9e1329] to-[#700d1c] rounded-t-2xl shadow-inner border-t-4 border-[#fffbeb] flex items-center justify-around px-3">
-          <div class="absolute -top-2 left-4 w-4 h-5 bg-[#fffbeb] rounded-b-full shadow-sm"></div>
-          <div class="absolute -top-2 left-12 w-5 h-7 bg-[#fffbeb] rounded-b-full shadow-sm"></div>
-          <div class="absolute -top-2 right-12 w-4 h-6 bg-[#fffbeb] rounded-b-full shadow-sm"></div>
-          <div class="absolute -top-2 right-4 w-5 h-4 bg-[#fffbeb] rounded-b-full shadow-sm"></div>
+        <!-- Big Center Candle Container -->
+        <div id="candle-wrapper" class="relative flex flex-col items-center cursor-pointer group z-20" onclick="handleCandleClick()">
           
-          <span class="text-sm select-none drop-shadow">🍒</span>
-          <span class="text-xs select-none text-rose-200">✨</span>
-          <span class="text-sm select-none drop-shadow">🍓</span>
+          <!-- Flame Element -->
+          <div id="flame" class="flame-active relative w-7 h-14 -mb-1">
+            <!-- Outer Fire Glow -->
+            <div class="absolute inset-0 rounded-full bg-gradient-to-t from-orange-600 via-yellow-400 to-white opacity-95 blur-[1px]"></div>
+            <!-- Inner Fire Core -->
+            <div class="absolute bottom-1 left-1.5 right-1.5 h-7 rounded-full bg-gradient-to-t from-blue-500 via-cyan-200 to-white"></div>
+          </div>
+
+          <!-- Smoke Element (Hidden initially) -->
+          <div id="smoke" class="hidden absolute -top-8 w-4 h-8 bg-gray-300/40 rounded-full blur-sm pointer-events-none"></div>
+
+          <!-- Candle Wick -->
+          <div class="w-1.5 h-3 bg-stone-800 rounded-t-sm z-10"></div>
+
+          <!-- Candle Body (Velvet Burgundy with Cream Cheese Stripes) -->
+          <div class="w-7 h-24 rounded-t-sm rounded-b-md shadow-2xl relative overflow-hidden bg-gradient-to-r from-rose-900 via-red-600 to-rose-900 border-x border-rose-400/30">
+            <div class="absolute inset-0 opacity-45 bg-[repeating-linear-gradient(45deg,#be123c,#be123c_6px,#fffbeb_6px,#fffbeb_12px)]"></div>
+            <div class="absolute top-0 left-0 right-0 h-2 bg-[#fffbeb] rounded-b-md shadow-sm"></div>
+            <div class="absolute top-2 left-1 w-1.5 h-3 bg-[#fffbeb] rounded-full"></div>
+          </div>
         </div>
 
-        <!-- Middle Cake Tier -->
-        <div class="relative w-56 sm:w-64 h-16 bg-gradient-to-r from-[#881326] via-[#ad1830] to-[#881326] rounded-t-xl border-t-4 border-[#fffbeb] shadow-md flex items-center justify-between px-6">
-          <div class="w-3 h-3 rounded-full bg-[#fffbeb] shadow border border-amber-100"></div>
-          <div class="w-2.5 h-2.5 rounded-full bg-rose-200 shadow"></div>
-          <div class="w-3 h-3 rounded-full bg-[#fffbeb] shadow border border-amber-100"></div>
-          <div class="w-2.5 h-2.5 rounded-full bg-rose-200 shadow"></div>
-          <div class="w-3 h-3 rounded-full bg-[#fffbeb] shadow border border-amber-100"></div>
-        </div>
-
-        <!-- Bottom Base Cake Tier -->
-        <div class="relative w-64 sm:w-72 h-16 bg-gradient-to-r from-[#6b0b18] via-[#8e1124] to-[#6b0b18] rounded-xl border-t-4 border-[#fffbeb] shadow-2xl flex items-center justify-center">
-          <span class="font-cursive tracking-widest text-[#fffbeb] text-xl sm:text-2xl font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-            Happy Birthday Arshii Babes❤️
-          </span>
-        </div>
-
-        <!-- Cake Plate -->
-        <div class="w-72 sm:w-80 h-4 bg-gradient-to-r from-amber-200 via-[#fffbeb] to-amber-200 rounded-full shadow-2xl mt-1 border-b border-amber-400/50"></div>
-      </div>
-    </div>
-
-    <!-- Background Direct MP3 Audio Player -->
-    <audio id="bg-audio" preload="auto" loop playsinline>
-      <source src="https://files.catbox.moe/q5kf0o.mp3" type="audio/mp3">
-    </audio>
-
-    <div id="candle-controls" class="flex flex-col items-center gap-3 mt-4 text-center z-20">
-      <div class="flex items-center gap-3">
-        <!-- Mic auto blow button -->
-        <button id="mic-toggle-btn" onclick="toggleMicrophoneBlow()" class="flex items-center space-x-2 bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-700 hover:to-red-800 text-white font-medium text-xs sm:text-sm px-5 py-2.5 rounded-full shadow-lg shadow-rose-900/40 transition transform hover:scale-105 active:scale-95">
-          <svg id="mic-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
-          </svg>
-          <span id="mic-label">ਮਾਈਕ ਓਨ ਕਰਕੇ ਫੂਕ ਮਾਰੋ 🎙️</span>
-        </button>
-
-        <!-- Tap button is STRICTLY HIDDEN initially -->
-        <button id="tap-fallback-btn" onclick="blowCandleManual()" class="hidden bg-white/15 hover:bg-white/25 border border-rose-300/40 text-rose-100 text-xs sm:text-sm px-4 py-2.5 rounded-full backdrop-blur-md shadow-lg transition transform hover:scale-105 active:scale-95 animate-bounce">
-          Tap Here To Blow 💨
-        </button>
-      </div>
-      
-      <p id="mic-status-msg" class="text-xs text-rose-300/90 italic">ਬਟਨ ਤੇ ਕਲਿੱਕ ਕਰਕੇ ਮਾਈਕ ਚ ਫੂਕ ਮਾਰੋ 🌬️</p>
-    </div>
-
-    <!-- Celebration Content Revealed After Blow -->
-    <div id="celebration-content" class="hidden opacity-0 translate-y-6 transition-all duration-1000 ease-out w-full mt-6 flex flex-col items-center">
-      
-      <!-- Celebratory Banner -->
-      <div class="text-center mb-6">
-        <h2 class="font-cursive text-5xl sm:text-7xl text-yellow-300 drop-shadow-[0_4px_25px_rgba(253,224,71,0.6)] animate-pulse">
-          Happy Birthday, Arshii! 🎉🎂
-        </h2>
-        <p class="text-rose-200 text-sm sm:text-base mt-2 font-medium">ਜਨਮਦਿਨ ਦੀਆਂ ਮੁਬਾਕਰਾਂ Miss Arshii Cutie...! 💖</p>
-      </div>
-
-      <div class="relative group my-4">
-        <!-- Floating decorative badge -->
-        <div class="absolute -top-3 -right-3 z-30 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg rotate-12 flex items-center space-x-1 select-none">
-          <span>My Princess</span>
-          <span>👑</span>
-        </div>
-
-        <!-- Polaroid Card with HD Image (No gallery popup) -->
-        <div class="bg-white p-3.5 sm:p-4 rounded-2xl shadow-2xl shadow-rose-900/30 transform rotate-[-2deg] hover:rotate-0 transition-transform duration-300 max-w-xs sm:max-w-sm text-stone-800 relative select-none">
-          <div class="w-72 sm:w-80 h-[460px] sm:h-[500px] rounded-xl overflow-hidden bg-rose-50 relative shadow-inner flex items-center justify-center border border-rose-200">
-            <img id="reveal-photo" 
-                 src="https://lh3.googleusercontent.com/d/1WuYkwWvFDmymCbXoeWRGpWZyoV27Ba1a" 
-                 alt="Arshii" 
-                 referrerpolicy="no-referrer"
-                 loading="eager"
-                 class="w-full h-full object-cover object-center transition-transform duration-700 hover:scale-105 pointer-events-none"
-                 onerror="handleImageError(this)" />
+        <!-- Red Velvet Cake Structure -->
+        <div class="relative w-full flex flex-col items-center -mt-1 cake-glow rounded-3xl p-2 transition-all duration-500">
+          
+          <!-- Top Cake Tier -->
+          <div class="relative w-44 sm:w-52 h-16 bg-gradient-to-r from-[#700d1c] via-[#9e1329] to-[#700d1c] rounded-t-2xl shadow-inner border-t-4 border-[#fffbeb] flex items-center justify-around px-3">
+            <div class="absolute -top-2 left-4 w-4 h-5 bg-[#fffbeb] rounded-b-full shadow-sm"></div>
+            <div class="absolute -top-2 left-12 w-5 h-7 bg-[#fffbeb] rounded-b-full shadow-sm"></div>
+            <div class="absolute -top-2 right-12 w-4 h-6 bg-[#fffbeb] rounded-b-full shadow-sm"></div>
+            <div class="absolute -top-2 right-4 w-5 h-4 bg-[#fffbeb] rounded-b-full shadow-sm"></div>
             
-            <!-- Fallback overlay if offline -->
-            <div id="photo-fallback" class="hidden absolute inset-0 bg-gradient-to-b from-rose-100 to-pink-200 flex flex-col items-center justify-center p-4 text-center">
-              <span class="text-4xl mb-2 animate-bounce">❤️</span>
-              <p class="font-cursive text-2xl text-rose-600 font-bold mb-1">Happy Birthday Arshii ❤️</p>
+            <span class="text-sm select-none drop-shadow">🍒</span>
+            <span class="text-xs select-none text-rose-200">✨</span>
+            <span class="text-sm select-none drop-shadow">🍓</span>
+          </div>
+
+          <!-- Middle Cake Tier -->
+          <div class="relative w-56 sm:w-64 h-16 bg-gradient-to-r from-[#881326] via-[#ad1830] to-[#881326] rounded-t-xl border-t-4 border-[#fffbeb] shadow-md flex items-center justify-between px-6">
+            <div class="w-3 h-3 rounded-full bg-[#fffbeb] shadow border border-amber-100"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-rose-200 shadow"></div>
+            <div class="w-3 h-3 rounded-full bg-[#fffbeb] shadow border border-amber-100"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-rose-200 shadow"></div>
+            <div class="w-3 h-3 rounded-full bg-[#fffbeb] shadow border border-amber-100"></div>
+          </div>
+
+          <!-- Bottom Base Cake Tier -->
+          <div class="relative w-64 sm:w-72 h-16 bg-gradient-to-r from-[#6b0b18] via-[#8e1124] to-[#6b0b18] rounded-xl border-t-4 border-[#fffbeb] shadow-2xl flex items-center justify-center">
+            <span class="font-cursive tracking-widest text-[#fffbeb] text-xl sm:text-2xl font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+              Happy Birthday Arshii Babes❤️
+            </span>
+          </div>
+
+          <!-- Cake Plate -->
+          <div class="w-72 sm:w-80 h-4 bg-gradient-to-r from-amber-200 via-[#fffbeb] to-amber-200 rounded-full shadow-2xl mt-1 border-b border-amber-400/50"></div>
+        </div>
+      </div>
+
+      <!-- Background Direct MP3 Audio Player -->
+      <audio id="bg-audio" preload="auto" loop playsinline>
+        <source src="https://files.catbox.moe/q5kf0o.mp3" type="audio/mp3">
+      </audio>
+
+      <div id="candle-controls" class="flex flex-col items-center gap-3 mt-4 text-center z-20">
+        <div class="flex items-center gap-3">
+          <!-- Mic auto blow button -->
+          <button id="mic-toggle-btn" onclick="toggleMicrophoneBlow()" class="flex items-center space-x-2 bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-700 hover:to-red-800 text-white font-medium text-xs sm:text-sm px-5 py-2.5 rounded-full shadow-lg shadow-rose-900/40 transition transform hover:scale-105 active:scale-95">
+            <svg id="mic-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+            </svg>
+            <span id="mic-label">ਮਾਈਕ ਓਨ ਕਰਕੇ ਫੂਕ ਮਾਰੋ 🎙️</span>
+          </button>
+
+          <!-- Tap button is STRICTLY HIDDEN initially -->
+          <button id="tap-fallback-btn" onclick="blowCandleManual()" class="hidden bg-white/15 hover:bg-white/25 border border-rose-300/40 text-rose-100 text-xs sm:text-sm px-4 py-2.5 rounded-full backdrop-blur-md shadow-lg transition transform hover:scale-105 active:scale-95 animate-bounce">
+            Tap Here To Blow 💨
+          </button>
+        </div>
+        
+        <p id="mic-status-msg" class="text-xs text-rose-300/90 italic">ਬਟਨ ਤੇ ਕਲਿੱਕ ਕਰਕੇ ਮਾਈਕ ਚ ਫੂਕ ਮਾਰੋ 🌬️</p>
+      </div>
+
+      <!-- Celebration Content Revealed After Blow -->
+      <div id="celebration-content" class="hidden opacity-0 translate-y-6 transition-all duration-1000 ease-out w-full mt-6 flex flex-col items-center">
+        
+        <!-- Celebratory Banner -->
+        <div class="text-center mb-6">
+          <h2 class="font-cursive text-5xl sm:text-7xl text-yellow-300 drop-shadow-[0_4px_25px_rgba(253,224,71,0.6)] animate-pulse">
+            Happy Birthday, Arshii! 🎉🎂
+          </h2>
+          <p class="text-rose-200 text-sm sm:text-base mt-2 font-medium">ਜਨਮਦਿਨ ਦੀਆਂ ਮੁਬਾਕਰਾਂ Miss Arshii Cutie...! 💖</p>
+        </div>
+
+        <div class="relative group my-4">
+          <!-- Floating decorative badge -->
+          <div class="absolute -top-3 -right-3 z-30 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg rotate-12 flex items-center space-x-1 select-none">
+            <span>My Princess</span>
+            <span>👑</span>
+          </div>
+
+          <!-- Polaroid Card with HD Image (No gallery popup) -->
+          <div class="bg-white p-3.5 sm:p-4 rounded-2xl shadow-2xl shadow-rose-900/30 transform rotate-[-2deg] hover:rotate-0 transition-transform duration-300 max-w-xs sm:max-w-sm text-stone-800 relative select-none">
+            <div class="w-72 sm:w-80 h-[460px] sm:h-[500px] rounded-xl overflow-hidden bg-rose-50 relative shadow-inner flex items-center justify-center border border-rose-200">
+              <img id="reveal-photo" 
+                   src="https://lh3.googleusercontent.com/d/1WuYkwWvFDmymCbXoeWRGpWZyoV27Ba1a" 
+                   alt="Arshii" 
+                   referrerpolicy="no-referrer"
+                   loading="eager"
+                   class="w-full h-full object-cover object-center transition-transform duration-700 hover:scale-105 pointer-events-none"
+                   onerror="handleImageError(this)" />
+              
+              <!-- Fallback overlay if offline -->
+              <div id="photo-fallback" class="hidden absolute inset-0 bg-gradient-to-b from-rose-100 to-pink-200 flex flex-col items-center justify-center p-4 text-center">
+                <span class="text-4xl mb-2 animate-bounce">❤️</span>
+                <p class="font-cursive text-2xl text-rose-600 font-bold mb-1">Happy Birthday Arshii ❤️</p>
+              </div>
+            </div>
+            <div class="pt-3 pb-1 text-center">
+              <p id="polaroid-caption" class="font-cursive text-2xl text-red-600 font-bold">The Prettiest Birthday Girl Arshii ✨</p>
             </div>
           </div>
-          <div class="pt-3 pb-1 text-center">
-            <p id="polaroid-caption" class="font-cursive text-2xl text-red-600 font-bold">The Prettiest Birthday Girl Arshii ✨</p>
+        </div>
+
+        <!-- Love Letter Card -->
+        <div class="w-full bg-white/10 backdrop-blur-xl border border-rose-500/30 rounded-3xl p-6 sm:p-8 mt-6 shadow-2xl relative overflow-hidden text-left">
+          <div class="absolute -right-6 -bottom-6 text-8xl text-rose-500/10 pointer-events-none select-none">❤️</div>
+          
+          <div class="flex items-center space-x-2 text-rose-300 text-xs font-semibold uppercase tracking-wider mb-2">
+            <span>💌</span>
+            <span>A Little Note From My Heart</span>
+          </div>
+
+          <h3 id="letter-title" class="font-cursive text-3xl sm:text-4xl text-rose-200 mb-4">
+            Dearest Arshii,
+          </h3>
+
+          <div id="letter-body" class="text-sm sm:text-base text-rose-100/95 leading-relaxed space-y-3 font-light">
+            <p id="p1">
+              Happy Birthday to the most beautiful, caring and Lovely in my life — My Arshii! ❤️
+            </p>
+            <p id="p2">
+              ਅੱਜ ਦਾ ਦਿਨ ਬਹੁਤ ਖਾਸ ਅਤੇ ਸੋਹਣਾ ਹੈ, ਕਿਉਂਕਿ ਅੱਜ ਕਿਸੇ ਨੇ ਧਰਤੀ ਤੇ ਛਾਲ ਮਾਰੀ ਅਤੇ ਪਿੰਡ ਵਾਲੇ ਕਹਿੰਦੇ ਓਹੀ ਗੱਲ ਹੋਗੀ ਜਿਹਦਾ ਡਰ ਸੀ 😂 .
+            </p>
+            <p id="p3">
+              ਮਜਾਕ ਤੋਂ ਪਾਸੇ ਹੋ ਕੇ ਅਰਸ਼ੀ ਜਨਮਦਿਨ ਦੀਆਂ ਬਹੁਤ ਬਹੁਤ ਮੁਬਾਰਕਾਂ, ਵਾਹਿਗੁਰੂ ਏਦਾਂ ਹੀ ਹੱਸਦਾ ਵੱਸਦਾ ਰੱਖੇ, ਤਰੱਕੀਆਂ ਮਾਣੋ, ਮਾਤਾ ਨੂੰ ਏਦਾਂ ਹੀ ਖੁਸ਼ ਰੱਖੋ, Always keep smiling my Queen! 👑💖 ਜੇਕਰ ਮੇਰੇ ਤੋਂ ਕਿਸੇ ਗਲਤੀ ਕਰਕੇ ਤੰਗ ਹੋਗੀ ਤਾਂ ਓਹਦੇ ਲਈ....... ਸੋਰੀ ਨੀ ਕਿਹ ਰਿਹਾ ਏਨਾ ਗੋਰ ਨਾਲ ਦੇਖ ਰਹੀ😂 ਛੋਟੇ ਮੋਟੇ ਕਾਰਨਾਮੇ ਝੱਲ ਲਿਆ ਕਰ, ਏਦਾਂ ਹੀ ਤੰਗ ਕਰਦੇ ਰਹਾਂਗੇ. Have a great Birthday year Babes. Lv u
+            </p>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-rose-400/20 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <p class="text-xs text-rose-300/70">Forever & Always,</p>
+              <p id="letter-signature" class="font-cursive text-2xl text-rose-300 font-bold">Yours Only Harman❤️</p>
+            </div>
           </div>
         </div>
+
+        <!-- Re-play candle button for fun -->
+        <button onclick="relightCandle()" class="mt-8 text-xs text-rose-300 hover:text-white flex items-center space-x-1.5 bg-white/5 hover:bg-white/15 px-4 py-2 rounded-full border border-rose-400/20 transition">
+          <span>🔄</span>
+          <span>Jalao Candle Phir Se (Relight Candle)</span>
+        </button>
+
       </div>
-
-      <!-- Love Letter Card -->
-      <div class="w-full bg-white/10 backdrop-blur-xl border border-rose-500/30 rounded-3xl p-6 sm:p-8 mt-6 shadow-2xl relative overflow-hidden text-left">
-        <div class="absolute -right-6 -bottom-6 text-8xl text-rose-500/10 pointer-events-none select-none">❤️</div>
-        
-        <div class="flex items-center space-x-2 text-rose-300 text-xs font-semibold uppercase tracking-wider mb-2">
-          <span>💌</span>
-          <span>A Little Note From My Heart</span>
-        </div>
-
-        <h3 id="letter-title" class="font-cursive text-3xl sm:text-4xl text-rose-200 mb-4">
-          Dearest Arshii,
-        </h3>
-
-        <div id="letter-body" class="text-sm sm:text-base text-rose-100/95 leading-relaxed space-y-3 font-light">
-          <p id="p1">
-            Happy Birthday to the most beautiful, caring and Lovely in my life — My Arshii! ❤️
-          </p>
-          <p id="p2">
-            ਅੱਜ ਦਾ ਦਿਨ ਬਹੁਤ ਖਾਸ ਅਤੇ ਸੋਹਣਾ ਹੈ, ਕਿਉਂਕਿ ਅੱਜ ਕਿਸੇ ਨੇ ਧਰਤੀ ਤੇ ਛਾਲ ਮਾਰੀ ਅਤੇ ਪਿੰਡ ਵਾਲੇ ਕਹਿੰਦੇ ਓਹੀ ਗੱਲ ਹੋਗੀ ਜਿਹਦਾ ਡਰ ਸੀ 😂 .
-          </p>
-          <p id="p3">
-            ਮਜਾਕ ਤੋਂ ਪਾਸੇ ਹੋ ਕੇ ਅਰਸ਼ੀ ਜਨਮਦਿਨ ਦੀਆਂ ਬਹੁਤ ਬਹੁਤ ਮੁਬਾਰਕਾਂ, ਵਾਹਿਗੁਰੂ ਏਦਾਂ ਹੀ ਹੱਸਦਾ ਵੱਸਦਾ ਰੱਖੇ, ਤਰੱਕੀਆਂ ਮਾਣੋ, ਘਰਦਿਆਂ ਦੀ ਸੇਵਾ ਕਰੋ ਅਤੇ ਖੁਸ਼ ਰੱਖੋ, Always keep smiling my Queen! 👑💖
-          </p>
-        </div>
-
-        <div class="mt-6 pt-4 border-t border-rose-400/20 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <p class="text-xs text-rose-300/70">Forever & Always,</p>
-            <p id="letter-signature" class="font-cursive text-2xl text-rose-300 font-bold">Yours Only Harman❤️</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Re-play candle button for fun -->
-      <button onclick="relightCandle()" class="mt-8 text-xs text-rose-300 hover:text-white flex items-center space-x-1.5 bg-white/5 hover:bg-white/15 px-4 py-2 rounded-full border border-rose-400/20 transition">
-        <span>🔄</span>
-        <span>Jalao Candle Phir Se (Relight Candle)</span>
-      </button>
-
-    </div>
-  </main>
+    </main>
+  </div>
 
   <!-- Minimal Floating Audio Control Pill -->
   <div id="floating-music-pill" class="hidden fixed bottom-4 right-4 z-50 flex items-center space-x-2 bg-black/60 backdrop-blur-md border border-rose-500/40 text-rose-200 px-3.5 py-1.5 rounded-full shadow-lg text-xs cursor-pointer hover:bg-black/80 transition" onclick="toggleSongPlayback()">
@@ -297,9 +333,32 @@
       photoUrl: "https://lh3.googleusercontent.com/d/1WuYkwWvFDmymCbXoeWRGpWZyoV27Ba1a",
       photoCaption: "The Prettiest Birthday Girl Arshii ✨",
       songUrl: "https://files.catbox.moe/q5kf0o.mp3",
+      videoUrl: "https://files.catbox.moe/gisf7s.mp4",
       herNickname: "Dearest Arshii,",
       yourSignature: "Yours Only Harman❤️"
     };
+
+    // Transition from Video to Cake
+    function proceedToCakeScreen() {
+      const videoIntro = document.getElementById('video-intro-section');
+      const cakeSection = document.getElementById('cake-surprise-section');
+      const introVideo = document.getElementById('intro-video');
+
+      if (introVideo) {
+        introVideo.pause();
+      }
+
+      videoIntro.classList.add('opacity-0');
+      setTimeout(() => {
+        videoIntro.classList.add('hidden');
+        cakeSection.classList.remove('hidden');
+        setTimeout(() => {
+          cakeSection.classList.remove('opacity-0');
+          cakeSection.classList.add('opacity-100');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 50);
+      }, 600);
+    }
 
     // State variables
     let isBlownOut = false;
@@ -627,7 +686,6 @@
       const timeElapsed = Date.now() - micStartTime;
 
       // STEP 1: SAFETY BUFFER (First 500ms)
-      // Discard button click thud and hardware initialization pops
       if (timeElapsed < 500) {
         animationFrameId = requestAnimationFrame(detectBlow);
         return;
@@ -646,7 +704,6 @@
       }
 
       // STEP 2: HYBRID DETECTION (Natural Breath Calibration)
-      // Time Domain Waveform Check:
       const timeData = new Uint8Array(analyser.fftSize);
       analyser.getByteTimeDomainData(timeData);
       let minVal = 255;
@@ -657,7 +714,6 @@
       }
       const peakToPeak = maxVal - minVal;
 
-      // Low Frequency Check (Wind/Breath turbulence):
       const freqData = new Uint8Array(analyser.frequencyBinCount);
       analyser.getByteFrequencyData(freqData);
       let lowSum = 0;
@@ -668,18 +724,15 @@
       const lowAvg = lowSum / binCount;
 
       // STEP 3: NATURAL BLOW DETECTION
-      // Calibrated so normal blowing close to phone easily triggers without exhausting her
       const isBlowing = (peakToPeak > 90 && lowAvg > 65);
 
       if (isBlowing) {
         sustainedStrongFrames++;
 
-        // Live visual: Flame shrinks and wavers with her breath
         const shrinkFactor = Math.max(0.2, 1 - (sustainedStrongFrames * 0.1));
         const tilt = (Math.random() - 0.5) * 30;
         flameEl.style.transform = `scale(${shrinkFactor}) rotate(${tilt}deg)`;
 
-        // Only requires ~120ms (7 frames) of gentle continuous breath
         if (sustainedStrongFrames >= 7) {
           blowCandleSuccess();
           return;
