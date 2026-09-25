@@ -49,7 +49,7 @@
     .flame-active {
       animation: flicker 1.1s infinite alternate ease-in-out;
       transform-origin: center bottom;
-      transition: transform 0.1s ease-out;
+      transition: transform 0.12s ease-out;
     }
 
     /* Smoke animation after blown out */
@@ -217,7 +217,7 @@
           <span>👑</span>
         </div>
 
-        <!-- Polaroid Card with HD Image (Touch/Click safe, no gallery popup) -->
+        <!-- Polaroid Card with HD Image (No gallery popup) -->
         <div class="bg-white p-3.5 sm:p-4 rounded-2xl shadow-2xl shadow-rose-900/30 transform rotate-[-2deg] hover:rotate-0 transition-transform duration-300 max-w-xs sm:max-w-sm text-stone-800 relative select-none">
           <div class="w-72 sm:w-80 h-[460px] sm:h-[500px] rounded-xl overflow-hidden bg-rose-50 relative shadow-inner flex items-center justify-center border border-rose-200">
             <img id="reveal-photo" 
@@ -318,13 +318,7 @@
     let sustainedStrongFrames = 0;
     let sustainedLowFrames = 0;
     let candleTapAttempts = 0;
-
-    // Baseline calibration variables
-    let isCalibrating = true;
-    let calibrationSamples = [];
-    let ambientNoiseBase = 25;
-    let strongBlowThreshold = 100;
-    let softBlowThreshold = 65;
+    let isWarmedUp = false;
 
     let isAudioPlaying = false;
     const bgAudioEl = document.getElementById('bg-audio');
@@ -535,7 +529,7 @@
       }
     });
 
-    // Helper for cross-browser microphone stream
+    // Cross-browser getUserMedia helper
     function getCrossBrowserUserMedia(constraints) {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         return navigator.mediaDevices.getUserMedia(constraints);
@@ -590,20 +584,19 @@
 
         analyser = audioContext.createAnalyser();
         analyser.fftSize = 512;
-        analyser.smoothingTimeConstant = 0.2;
+        analyser.smoothingTimeConstant = 0.15;
         microphoneNode = audioContext.createMediaStreamSource(stream);
         microphoneNode.connect(analyser);
 
         isListening = true;
         micStartTime = Date.now();
-        isCalibrating = true;
-        calibrationSamples = [];
+        isWarmedUp = false;
         sustainedStrongFrames = 0;
         sustainedLowFrames = 0;
 
-        micLabel.innerHTML = 'ਮਾਈਕ ਓਨ ਹੋ ਰਿਹਾ ਹੈ... ⏳';
+        micLabel.innerHTML = 'ਮਾਈਕ ਤਿਆਰ ਹੋ ਰਿਹਾ ਹੈ... ⏳';
         micToggleBtn.classList.add('ring-4', 'ring-rose-400');
-        micStatusMsg.innerText = 'ਤਿਆਰ ਹੋ ਜਾਓ... ਫੂਕ ਮਾਰਨ ਲਈ! 🌬️';
+        micStatusMsg.innerText = '1 ਸਕਿੰਟ ਰੁਕੋ... ਫੂਕ ਮਾਰਨ ਲਈ ਤਿਆਰ ਹੋਵੋ! 🌬️';
 
         detectBlow();
       } catch (err) {
@@ -631,60 +624,65 @@
     function detectBlow() {
       if (!isListening || isBlownOut) return;
 
-      const bufferLength = analyser.frequencyBinCount;
-      const dataArray = new Uint8Array(bufferLength);
-      analyser.getByteFrequencyData(dataArray);
-
-      // Low frequency turbulence caused by breath/wind (bins 1 to 14, ~90Hz - 1300Hz)
-      let lowFreqSum = 0;
-      const lowBinCount = 14;
-      for (let i = 1; i <= lowBinCount; i++) {
-        lowFreqSum += dataArray[i];
-      }
-      const currentEnergy = lowFreqSum / lowBinCount;
-
       const timeElapsed = Date.now() - micStartTime;
 
-      // STEP 1: CALIBRATION PHASE (First 600ms)
-      // Discard button tap noise and measure ambient room sound
-      if (timeElapsed < 600) {
-        calibrationSamples.push(currentEnergy);
+      // STEP 1: SAFETY BUFFER (First 1200ms)
+      // Discard button click thud, phone tap vibration, and hardware initialization pops completely!
+      if (timeElapsed < 1200) {
         animationFrameId = requestAnimationFrame(detectBlow);
         return;
       }
 
-      // Finish calibration and calculate room baseline
-      if (isCalibrating) {
-        isCalibrating = false;
-        const sum = calibrationSamples.reduce((a, b) => a + b, 0);
-        ambientNoiseBase = calibrationSamples.length ? (sum / calibrationSamples.length) : 25;
-        
-        // Dynamically compute thresholds based on room's ambient sound
-        strongBlowThreshold = Math.max(105, ambientNoiseBase + 55);
-        softBlowThreshold = Math.max(65, ambientNoiseBase + 25);
-
-        micLabel.innerHTML = 'ਜ਼ੋਰ ਨਾਲ ਫੂਕ ਮਾਰੋ! 🌬️';
+      if (!isWarmedUp) {
+        isWarmedUp = true;
+        micLabel.innerHTML = 'ਹੁਣ ਜ਼ੋਰ ਨਾਲ ਫੂਕ ਮਾਰੋ! 🌬️';
         micToggleBtn.classList.add('animate-pulse');
-        micStatusMsg.innerText = 'ਮਾਈਕ ਦੇ ਬਿਲਕੁਲ ਕੋਲ ਜਾ ਕੇ ਫੂਕ ਮਾਰੋ 🌬️';
+        micStatusMsg.innerText = 'ਫ਼ੋਨ ਦੇ ਮਾਈਕ ਦੇ ਬਿਲਕੁਲ ਕੋਲ ਜਾ ਕੇ ਜ਼ੋਰ ਨਾਲ ਫੂਕ ਮਾਰੋ 🌬️';
       }
 
-      // If user tries for 8 seconds without blowing out, unlock fallback
-      if (timeElapsed > 8000 && !canTapToBlow) {
+      // If user tries for 9 seconds without blowing out, smoothly reveal tap fallback
+      if (timeElapsed > 9000 && !canTapToBlow) {
         unlockTapOption();
       }
 
-      // STEP 2: STRONG SUSTAINED BLOW
-      // Wind blowing directly into the mic saturates diaphragm (energy > strongBlowThreshold)
-      if (currentEnergy > strongBlowThreshold) {
+      // STEP 2: HYBRID DETECTION (Time-domain peak-to-peak amplitude + Low-frequency air turbulence)
+      // 1. Time Domain Waveform Check:
+      // When air hits the mic diaphragm, it causes severe physical clipping (peak-to-peak > 150 out of 255)
+      // Normal room noise, fan hum, or speaking cannot reach peak-to-peak > 140!
+      const timeData = new Uint8Array(analyser.fftSize);
+      analyser.getByteTimeDomainData(timeData);
+      let minVal = 255;
+      let maxVal = 0;
+      for (let i = 0; i < timeData.length; i++) {
+        if (timeData[i] < minVal) minVal = timeData[i];
+        if (timeData[i] > maxVal) maxVal = timeData[i];
+      }
+      const peakToPeak = maxVal - minVal;
+
+      // 2. Frequency Check (bins 1 to 10):
+      const freqData = new Uint8Array(analyser.frequencyBinCount);
+      analyser.getByteFrequencyData(freqData);
+      let lowSum = 0;
+      const binCount = 10;
+      for (let i = 1; i <= binCount; i++) {
+        lowSum += freqData[i];
+      }
+      const lowAvg = lowSum / binCount;
+
+      // STEP 3: STRONG SUSTAINED BREATH
+      // True blowing requires continuous diaphragm pressure: peakToPeak > 150 AND lowAvg > 110
+      const isBlowingHard = (peakToPeak > 150 && lowAvg > 110);
+
+      if (isBlowingHard) {
         sustainedStrongFrames++;
 
-        // Live visual feedback: the flame shrinks and bends noticeably as air hits the phone!
-        const shrinkFactor = Math.max(0.18, 1 - (sustainedStrongFrames * 0.06));
-        const tilt = (Math.random() - 0.5) * 35;
+        // Live visual: the flame dynamically shrinks and wobbles in real-time as air hits the phone!
+        const shrinkFactor = Math.max(0.18, 1 - (sustainedStrongFrames * 0.045));
+        const tilt = (Math.random() - 0.5) * 36;
         flameEl.style.transform = `scale(${shrinkFactor}) rotate(${tilt}deg)`;
 
-        // Requires ~230ms - 280ms of continuous blowing (14 consecutive frames)
-        if (sustainedStrongFrames >= 14) {
+        // Requires ~350ms - 400ms of sustained continuous blowing (20 consecutive frames)
+        if (sustainedStrongFrames >= 20) {
           blowCandleSuccess();
           return;
         }
@@ -692,12 +690,14 @@
         sustainedStrongFrames = Math.max(0, sustainedStrongFrames - 2);
       }
 
-      // STEP 3: SOFT BLOW DETECTION
-      if (currentEnergy > softBlowThreshold && currentEnergy <= strongBlowThreshold) {
-        sustainedLowFrames++;
-        flameEl.style.transform = 'scale(0.85, 1.1) rotate(5deg)';
+      // STEP 4: SOFT BLOW DETECTION (Gentle breath)
+      const isBlowingSoft = (peakToPeak > 85 && peakToPeak <= 150 && lowAvg > 75);
 
-        if (sustainedLowFrames >= 8 && !isBreathActive) {
+      if (isBlowingSoft) {
+        sustainedLowFrames++;
+        flameEl.style.transform = 'scale(0.85, 1.1) rotate(6deg)';
+
+        if (sustainedLowFrames >= 12 && !isBreathActive) {
           isBreathActive = true;
           lowBlowCount++;
           sustainedLowFrames = 0;
@@ -715,7 +715,7 @@
             }
           }, 1100);
         }
-      } else if (currentEnergy <= softBlowThreshold && sustainedStrongFrames === 0) {
+      } else if (!isBlowingHard && sustainedStrongFrames === 0) {
         sustainedLowFrames = 0;
         if (!isBreathActive && flameEl && !isBlownOut) {
           flameEl.style.transform = '';
@@ -730,6 +730,7 @@
       lowBlowCount = 0;
       canTapToBlow = false;
       candleTapAttempts = 0;
+      isWarmedUp = false;
 
       flameEl.style.transform = 'scale(1)';
       flameEl.style.opacity = '1';
