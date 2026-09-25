@@ -626,29 +626,27 @@
 
       const timeElapsed = Date.now() - micStartTime;
 
-      // STEP 1: SAFETY BUFFER (First 1200ms)
-      // Discard button click thud, phone tap vibration, and hardware initialization pops completely!
-      if (timeElapsed < 1200) {
+      // STEP 1: SAFETY BUFFER (First 500ms)
+      // Discard button click thud and hardware initialization pops
+      if (timeElapsed < 500) {
         animationFrameId = requestAnimationFrame(detectBlow);
         return;
       }
 
       if (!isWarmedUp) {
         isWarmedUp = true;
-        micLabel.innerHTML = 'ਹੁਣ ਜ਼ੋਰ ਨਾਲ ਫੂਕ ਮਾਰੋ! 🌬️';
+        micLabel.innerHTML = 'ਹੁਣ ਫੂਕ ਮਾਰੋ! 🌬️';
         micToggleBtn.classList.add('animate-pulse');
-        micStatusMsg.innerText = 'ਫ਼ੋਨ ਦੇ ਮਾਈਕ ਦੇ ਬਿਲਕੁਲ ਕੋਲ ਜਾ ਕੇ ਜ਼ੋਰ ਨਾਲ ਫੂਕ ਮਾਰੋ 🌬️';
+        micStatusMsg.innerText = 'ਮਾਈਕ ਵੱਲ ਦੇਖ ਕੇ ਪਿਆਰ ਨਾਲ ਫੂਕ ਮਾਰੋ 🌬️';
       }
 
-      // If user tries for 9 seconds without blowing out, smoothly reveal tap fallback
-      if (timeElapsed > 9000 && !canTapToBlow) {
+      // If user tries for 7 seconds without blowing out, smoothly reveal tap fallback
+      if (timeElapsed > 7000 && !canTapToBlow) {
         unlockTapOption();
       }
 
-      // STEP 2: HYBRID DETECTION (Time-domain peak-to-peak amplitude + Low-frequency air turbulence)
-      // 1. Time Domain Waveform Check:
-      // When air hits the mic diaphragm, it causes severe physical clipping (peak-to-peak > 150 out of 255)
-      // Normal room noise, fan hum, or speaking cannot reach peak-to-peak > 140!
+      // STEP 2: HYBRID DETECTION (Natural Breath Calibration)
+      // Time Domain Waveform Check:
       const timeData = new Uint8Array(analyser.fftSize);
       analyser.getByteTimeDomainData(timeData);
       let minVal = 255;
@@ -659,51 +657,51 @@
       }
       const peakToPeak = maxVal - minVal;
 
-      // 2. Frequency Check (bins 1 to 10):
+      // Low Frequency Check (Wind/Breath turbulence):
       const freqData = new Uint8Array(analyser.frequencyBinCount);
       analyser.getByteFrequencyData(freqData);
       let lowSum = 0;
-      const binCount = 10;
+      const binCount = 12;
       for (let i = 1; i <= binCount; i++) {
         lowSum += freqData[i];
       }
       const lowAvg = lowSum / binCount;
 
-      // STEP 3: STRONG SUSTAINED BREATH
-      // True blowing requires continuous diaphragm pressure: peakToPeak > 150 AND lowAvg > 110
-      const isBlowingHard = (peakToPeak > 150 && lowAvg > 110);
+      // STEP 3: NATURAL BLOW DETECTION
+      // Calibrated so normal blowing close to phone easily triggers without exhausting her
+      const isBlowing = (peakToPeak > 90 && lowAvg > 65);
 
-      if (isBlowingHard) {
+      if (isBlowing) {
         sustainedStrongFrames++;
 
-        // Live visual: the flame dynamically shrinks and wobbles in real-time as air hits the phone!
-        const shrinkFactor = Math.max(0.18, 1 - (sustainedStrongFrames * 0.045));
-        const tilt = (Math.random() - 0.5) * 36;
+        // Live visual: Flame shrinks and wavers with her breath
+        const shrinkFactor = Math.max(0.2, 1 - (sustainedStrongFrames * 0.1));
+        const tilt = (Math.random() - 0.5) * 30;
         flameEl.style.transform = `scale(${shrinkFactor}) rotate(${tilt}deg)`;
 
-        // Requires ~350ms - 400ms of sustained continuous blowing (20 consecutive frames)
-        if (sustainedStrongFrames >= 20) {
+        // Only requires ~120ms (7 frames) of gentle continuous breath
+        if (sustainedStrongFrames >= 7) {
           blowCandleSuccess();
           return;
         }
       } else {
-        sustainedStrongFrames = Math.max(0, sustainedStrongFrames - 2);
+        sustainedStrongFrames = Math.max(0, sustainedStrongFrames - 1);
       }
 
-      // STEP 4: SOFT BLOW DETECTION (Gentle breath)
-      const isBlowingSoft = (peakToPeak > 85 && peakToPeak <= 150 && lowAvg > 75);
+      // STEP 4: GENTLE PUFF DETECTION
+      const isBlowingSoft = (peakToPeak > 60 && peakToPeak <= 90 && lowAvg > 45);
 
       if (isBlowingSoft) {
         sustainedLowFrames++;
-        flameEl.style.transform = 'scale(0.85, 1.1) rotate(6deg)';
+        flameEl.style.transform = 'scale(0.85, 1.1) rotate(5deg)';
 
-        if (sustainedLowFrames >= 12 && !isBreathActive) {
+        if (sustainedLowFrames >= 8 && !isBreathActive) {
           isBreathActive = true;
           lowBlowCount++;
           sustainedLowFrames = 0;
 
           if (lowBlowCount === 1) {
-            micStatusMsg.innerText = "ਥੋੜੀ ਜਿਹੀ ਹੋਰ ਤੇਜ਼ ਫੂਕ ਮਾਰੋ ਜੀ! 🌬️ (ਕੋਸ਼ਿਸ਼ 1/2)";
+            micStatusMsg.innerText = "ਥੋੜੀ ਜਿਹੀ ਹੋਰ ਨੇੜੇ ਹੋ ਕੇ ਫੂਕ ਮਾਰੋ ਜੀ! 🌬️ (ਕੋਸ਼ਿਸ਼ 1/2)";
           } else if (lowBlowCount >= 2) {
             unlockTapOption();
           }
@@ -713,9 +711,9 @@
             if (flameEl && !isBlownOut && sustainedStrongFrames === 0) {
               flameEl.style.transform = '';
             }
-          }, 1100);
+          }, 900);
         }
-      } else if (!isBlowingHard && sustainedStrongFrames === 0) {
+      } else if (!isBlowing && sustainedStrongFrames === 0) {
         sustainedLowFrames = 0;
         if (!isBreathActive && flameEl && !isBlownOut) {
           flameEl.style.transform = '';
